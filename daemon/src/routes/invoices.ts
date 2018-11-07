@@ -2,14 +2,14 @@ import Invoices from "../controllers/invoices";
 import Filter from "../models/filter";
 
 export function route(app) {
-    app.route('/invoices/list')
+    app.route('/invoices')
         .get((request, response) => {
             response.send(
                 Invoices.list(new Filter(request.query))
             )
         })
 
-    app.route('/invoices/generate')
+    app.route('/invoices')
         .post((request, response) => {
             response.send(
                 Invoices.generate(
