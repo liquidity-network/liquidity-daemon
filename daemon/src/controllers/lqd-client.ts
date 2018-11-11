@@ -22,7 +22,45 @@ const Tx = require('ethereumjs-tx');
 const fs = require("fs");
 const path = require('path');
 
-const config = JSON.parse(fs.readFileSync(path.join(path.dirname(path.dirname(__dirname)), 'config.json') ));
+let config = null;
+
+function populateConfig(){
+  const requiredConfig = [
+    'ETHEREUM_WALLET_PRIVATE_KEY',
+    'ETHEREUM_NODE_URL',
+    'ETHEREUM_NETWORK_ID',
+    'HUB_CONTRACT_ADDRESS',
+    'HUB_PROVIDER_URL',
+    'TOKEN_CONTRACT_ADDRESS',
+  ]
+
+  const configPath = path.join(path.dirname(path.dirname(__dirname)), 'config.json');
+
+  try{
+    config = JSON.parse(fs.readFileSync(configPath));
+  }catch(err){
+    if(err.code === 'ENOENT'){
+      config = {
+        ETHEREUM_WALLET_PRIVATE_KEY: process.env.ETHEREUM_WALLET_PRIVATE_KEY,
+        ETHEREUM_NODE_URL: process.env.ETHEREUM_NODE_URL,
+        ETHEREUM_NETWORK_ID: process.env.ETHEREUM_NETWORK_ID,
+        HUB_CONTRACT_ADDRESS: process.env.HUB_CONTRACT_ADDRESS,
+        HUB_PROVIDER_URL: process.env.HUB_PROVIDER_URL,
+        TOKEN_CONTRACT_ADDRESS: process.env.TOKEN_CONTRACT_ADDRESS
+      };
+    }else{
+      throw err;
+    }
+  }
+
+  for(const key of requiredConfig){
+    if(typeof config[key] === 'undefined'){
+      throw new Error(`configuration error: ${key} is missing`);
+    }
+  }
+}
+
+populateConfig();
 
 function padWithZeroes(numb, length) {
     let myString = '' + numb;
@@ -304,14 +342,18 @@ export default class LQDManager {
       transaction['chainId'] = parseInt(hubProvider['networkId']);
       transaction['nonce'] =  lqdClient.web3Service.rpc.eth.getTransactionCount(wallet.address);
 
-      const gasLimit = lqdClient.web3Service.rpc.eth.estimateGas({
-          "from" : transaction['from'],
-          "to" : transaction['to'],
-          "nonce" : transaction['nonce'],
-          "data" : transaction['data']
-      })
+      if(! ("gasLimit" in transaction)){
+        const gasLimit = lqdClient.web3Service.rpc.eth.estimateGas({
+            "from" : transaction['from'],
+            "to" : transaction['to'],
+            "nonce" : transaction['nonce'],
+            "data" : transaction['data']
+        })
 
-      transaction['gasLimit'] = gasLimit + 10000;
+        transaction['gasLimit'] = gasLimit + 10000;
+      }
+
+      console.log(transaction['gasLimit'])
 
       let tx = new Tx(transaction);
       tx.sign(privateKey);

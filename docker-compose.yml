@@ -1,23 +1,53 @@
 version: '3'
 
 services:
-  daemon:
+  # daemon:
+  #   build: .
+  #   ports:
+  #     - 3600:80
+  #   command: node dist
+  #   volumes:
+  #     - ./tx-db.json:/code/tx_dump.json
+  #     - ./invoices.json:/code/invoices.json
+  #     - ./config.json:/code/config.json:ro
+
+  daemon-dev:
     build: .
     ports:
       - 3600:80
-    command: node dist
+    command: npm start
     volumes:
+      - ./daemon/src:/code/src:ro
       - ./tx-db.json:/code/tx_dump.json
       - ./invoices.json:/code/invoices.json
       - ./config.json:/code/config.json:ro
 
-  # daemon-dev:
+  # daemon-a:
   #   build: .
   #   ports:
-  #     - 3600:80
+  #     - 3601:80
   #   command: npm start
+  #   environment:
+  #     - ETHEREUM_WALLET_PRIVATE_KEY=
+  #     - ETHEREUM_NODE_URL=https://rinkeby.infura.io/v3/e3f943e7f2904939955a13f0b9283840
+  #     - ETHEREUM_NETWORK_ID=4
+  #     - HUB_CONTRACT_ADDRESS=0x140D29486BABCbD57C63edCCCbf2EC92ffBfEc7c
+  #     - HUB_PROVIDER_URL=http://rinkeby.liquidity.network
+  #     - TOKEN_CONTRACT_ADDRESS=0x140D29486BABCbD57C63edCCCbf2EC92ffBfEc7c
   #   volumes:
   #     - ./daemon/src:/code/src:ro
-  #     - ./tx-db.json:/code/tx_dump.json
-  #     - ./invoices.json:/code/invoices.json
-  #     - ./config.json:/code/config.json:ro
+  #
+  # daemon-b:
+  #   build: .
+  #   ports:
+  #     - 3602:80
+  #   command: npm start
+  #   environment:
+  #     - ETHEREUM_WALLET_PRIVATE_KEY=
+  #     - ETHEREUM_NODE_URL=https://rinkeby.infura.io/v3/e3f943e7f2904939955a13f0b9283840
+  #     - ETHEREUM_NETWORK_ID=4
+  #     - HUB_CONTRACT_ADDRESS=0x140D29486BABCbD57C63edCCCbf2EC92ffBfEc7c
+  #     - HUB_PROVIDER_URL=http://rinkeby.liquidity.network
+  #     - TOKEN_CONTRACT_ADDRESS=0x140D29486BABCbD57C63edCCCbf2EC92ffBfEc7c
+  #   volumes:
+  #     - ./daemon/src:/code/src:ro
