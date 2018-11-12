@@ -8,8 +8,6 @@ export function route(app) {
                 Transfers.list(new Filter(request.query))
             )
         })
-
-    app.route('/transfers')
         .post(async (request, response) => {
             response.send(
                 await Transfers.send(

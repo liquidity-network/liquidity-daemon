@@ -8,8 +8,6 @@ export function route(app) {
                 Invoices.list(new Filter(request.query))
             )
         })
-
-    app.route('/invoices')
         .post((request, response) => {
             response.send(
                 Invoices.generate(

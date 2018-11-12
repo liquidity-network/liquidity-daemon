@@ -3,7 +3,8 @@ const routes = [
     'invoices',
     'transfers',
     'wallet',
-    'deposits'
+    'deposits',
+    'withdrawals'
 ]
 
 export default app => {
