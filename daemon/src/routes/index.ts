@@ -4,7 +4,6 @@ const routes = [
     'transfers',
     'wallet',
     'deposits',
-    'withdrawals'
 ]
 
 export default app => {
