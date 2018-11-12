@@ -10,7 +10,7 @@ export default class Wallet {
             ethereumNodeUrl: hub.networkId,
             hubContractAddress: hub.contract,
             hubProviderUrl: hub.url,
-            amount: wallet.withdrawableAmount.toFixed(0),
+            amount: wallet.offChainBalance.toFixed(0),
             onchain: {
                 amount: web3.fromWei(await web3.eth.getBalance(wallet.address))
             },
